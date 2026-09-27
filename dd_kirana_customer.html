@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DD KIRANA STORE - Online Grocery Shopping</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 1.8em;
+        }
+        
+        .cart-icon {
+            background: white;
+            color: #FF6B35;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+            cursor: pointer;
+            position: relative;
+            font-weight: bold;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #FFD700;
+            color: #333;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .offer-banner {
+            background: linear-gradient(90deg, #FFD700 0%, #FFC107 100%);
+            color: #333;
+            padding: 20px;
+            text-align: center;
+            font-weight: bold;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-size: 1.1em;
+        }
+        
+        .section-title {
+            font-size: 1.8em;
+            color: #FF6B35;
+            margin: 25px 0 15px;
+            text-align: center;
+            border-bottom: 3px solid #FF6B35;
+            padding-bottom: 10px;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border-color: #FF6B35;
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+        
+        .product-info {
+            padding: 12px;
+        }
+        
+        .product-name {
+            font-weight: bold;
+            color: #FF6B35;
+            font-size: 0.95em;
+            margin-bottom: 5px;
+        }
+        
+        .product-brand {
+            font-size: 0.85em;
+            color: #999;
+            margin-bottom: 5px;
+        }
+        
+        .product-price {
+            font-size: 1.4em;
+            color: #2c3e50;
+            font-weight: bold;
+            margin: 8px 0;
+        }
+        
+        .add-btn {
+            width: 100%;
+            padding: 10px;
+            background: #FF6B35;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        .add-btn:hover {
+            background: #FF5520;
+        }
+        
+        .cart-items {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .cart-item-image {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+        
+        .cart-item-details {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .cart-item-name {
+            font-weight: bold;
+            color: #FF6B35;
+            margin-bottom: 5px;
+        }
+        
+        .cart-item-price {
+            color: #666;
+            font-size: 0.95em;
+        }
+        
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .qty-btn {
+            background: #f0f0f0;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #FF6B35;
+        }
+        
+        .qty-btn:hover {
+            background: #FF6B35;
+            color: white;
+        }
+        
+        .remove-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .summary-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #FF6B35;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-size: 1.05em;
+        }
+        
+        .summary-row.total {
+            border-top: 3px solid #FF6B35;
+            padding-top: 15px;
+            font-weight: bold;
+            font-size: 1.3em;
+            color: #FF6B35;
+        }
+        
+        .checkout-btn {
+            width: 100%;
+            padding: 15px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        
+        .checkout-btn:hover {
+            background: #45a049;
+        }
+        
+        .back-btn {
+            background: #FF6B35;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .back-btn:hover {
+            background: #FF5520;
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 50px 20px;
+            background: white;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .empty-cart h2 {
+            color: #FF6B35;
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+            
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🛒 DD KIRANA STORE</h1>
+        <div class="cart-icon" onclick="goToCart()">
+            🛒
+            <span class="cart-count" id="cartCount">0</span>
+        </div>
+    </header>
+    
+    <!-- SHOP PAGE -->
+    <div id="shopPage" class="page active">
+        <div class="container">
+            <div class="offer-banner">
+                ⭐ SPECIAL OFFER: Buy Products Worth ₹500 → GET 1 FREE BAG! ⭐
+            </div>
+            
+            <h2 class="section-title">🛍️ All Products</h2>
+            <div class="products-grid" id="productsGrid"></div>
+        </div>
+    </div>
+    
+    <!-- CART PAGE -->
+    <div id="cartPage" class="page">
+        <div class="container">
+            <button class="back-btn" onclick="goToShop()">← Back to Shop</button>
+            
+            <h2 class="section-title">🛒 Your Shopping Cart</h2>
+            <div id="cartContent"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Default products
+        let products = JSON.parse(localStorage.getItem('products')) || [
+            { id: 1, name: "Aashirvaad Basmati Rice", brand: "2kg", price: 320, image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300", category: "grains" },
+            { id: 2, name: "Fortune Sunflower Oil", brand: "1L", price: 155, image: "https://images.unsplash.com/photo-1587734314609-c4b5b759b1e9?w=300", category: "grains" },
+            { id: 3, name: "Britannia Good Day", brand: "400g", price: 75, image: "https://images.unsplash.com/photo-1550080876-de96c1767d5e?w=300", category: "snacks" },
+            { id: 4, name: "Kurkure Namkeen", brand: "20g", price: 10, image: "https://images.unsplash.com/photo-1599599810694-b5ac4dd94cde?w=300", category: "snacks" },
+            { id: 5, name: "Thums Up Cold Drink", brand: "250ml", price: 50, image: "https://images.unsplash.com/photo-1590542331432-8a5d91221683?w=200", category: "drinks" }
+        ];
+        
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        function renderProducts() {
+            const html = products.map(p => `
+                <div class="product-card">
+                    <img src="${p.image}" alt="${p.name}" class="product-image" onerror="this.src='https://via.placeholder.com/300x300?text=${encodeURIComponent(p.name)}'">
+                    <div class="product-info">
+                        <div class="product-name">${p.name}</div>
+                        <div class="product-brand">${p.brand}</div>
+                        <div class="product-price">₹${p.price}</div>
+                        <button class="add-btn" onclick="addToCart(${p.id})">Add to Cart</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('productsGrid').innerHTML = html;
+        }
+        
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existing = cart.find(c => c.id === productId);
+            
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            alert(`✅ ${product.name} added to cart!`);
+        }
+        
+        function updateCartCount() {
+            const count = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cartCount').textContent = count;
+        }
+        
+        function goToCart() {
+            document.getElementById('shopPage').classList.remove('active');
+            document.getElementById('cartPage').classList.add('active');
+            renderCart();
+        }
+        
+        function goToShop() {
+            document.getElementById('cartPage').classList.remove('active');
+            document.getElementById('shopPage').classList.add('active');
+        }
+        
+        function renderCart() {
+            if (cart.length === 0) {
+                document.getElementById('cartContent').innerHTML = `
+                    <div class="empty-cart">
+                        <h2>🛒 Your Cart is Empty</h2>
+                        <p style="color: #666; margin: 10px 0;">Add some products to get started!</p>
+                        <button class="back-btn" onclick="goToShop()">← Continue Shopping</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            
+            let html = '<div class="cart-items">';
+            html += cart.map(item => `
+                <div class="cart-item">
+                    <img src="${item.image}" alt="${item.name}" class="cart-item-image" onerror="this.src='https://via.placeholder.com/70x70'">
+                    <div class="cart-item-details">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-price">₹${item.price} × ${item.qty} = ₹${item.price * item.qty}</div>
+                    </div>
+                    <div class="cart-item-controls">
+                        <button class="qty-btn" onclick="updateQty(${item.id}, -1)">−</button>
+                        <span>${item.qty}</span>
+                        <button class="qty-btn" onclick="updateQty(${item.id}, 1)">+</button>
+                        <button class="remove-btn" onclick="removeFromCart(${item.id})">Remove</button>
+                    </div>
+                </div>
+            `).join('');
+            html += '</div>';
+            
+            html += `
+                <div class="summary-box">
+                    <div class="summary-row">
+                        <span>📦 Subtotal:</span>
+                        <span>₹${total}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>🚚 Delivery (within 2km):</span>
+                        <span style="color: #4CAF50; font-weight: bold;">FREE</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total Amount:</span>
+                        <span>₹${total}</span>
+                    </div>
+                    <button class="checkout-btn" onclick="sendOrderToWhatsApp()">📤 Order via WhatsApp</button>
+                </div>
+            `;
+            
+            document.getElementById('cartContent').innerHTML = html;
+        }
+        
+        function updateQty(productId, change) {
+            const item = cart.find(c => c.id === productId);
+            if (item) {
+                item.qty += change;
+                if (item.qty <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    updateCartCount();
+                    renderCart();
+                }
+            }
+        }
+        
+        function removeFromCart(productId) {
+            cart = cart.filter(c => c.id !== productId);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            renderCart();
+        }
+        
+        function sendOrderToWhatsApp() {
+            const name = prompt('👤 Your Name:');
+            if (!name) return;
+            
+            const phone = prompt('📱 Your WhatsApp Number:');
+            if (!phone) return;
+            
+            const address = prompt('📍 Your Delivery Address:');
+            if (!address) return;
+            
+            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            
+            let orderDetails = `🛒 *DD KIRANA STORE - NEW ORDER*%0A%0A`;
+            orderDetails += `👤 *Name:* ${encodeURIComponent(name)}%0A`;
+            orderDetails += `📱 *Phone:* ${encodeURIComponent(phone)}%0A`;
+            orderDetails += `📍 *Address:* ${encodeURIComponent(address)}%0A%0A`;
+            orderDetails += `📦 *Items Ordered:%0A`;
+            
+            cart.forEach(item => {
+                orderDetails += `• ${encodeURIComponent(item.name)} ×${item.qty} = ₹${item.price * item.qty}%0A`;
+            });
+            
+            orderDetails += `%0A💰 *Total Amount:* ₹${total}%0A💳 *Payment:* UPI - 9508376360@ybl`;
+            
+            window.open(`https://wa.me/919508376360?text=${orderDetails}`, '_blank');
+            
+            cart = [];
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            goToShop();
+            alert('✅ Order sent to WhatsApp! Our team will confirm shortly.');
+        }
+        
+        // Initialize
+        renderProducts();
+        updateCartCount();
+        
+        // Auto-refresh products from localStorage every 2 seconds
+        setInterval(() => {
+            const updatedProducts = JSON.parse(localStorage.getItem('products'));
+            if (updatedProducts && JSON.stringify(updatedProducts) !== JSON.stringify(products)) {
+                products = updatedProducts;
+                renderProducts();
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
